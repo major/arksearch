@@ -1,7 +1,7 @@
 Command line Intel ARK search
 =============================
 
-This **completely unofficial** script will perform a search of `Intel's ARK site`_ for processor information.  Using the script is fairly straightforward:
+This **completely unofficial** script will perform a search of `Intel's ARK site`_ for processor information.
 
 Installation
 ------------
@@ -18,6 +18,8 @@ or via git::
 
 Usage
 -----
+
+Using the script is fairly straightforward:
 
 * Search for a processor, such as the ``E3-1230``
 * Choose the exact processor from a list
