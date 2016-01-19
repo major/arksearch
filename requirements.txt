@@ -1,0 +1,5 @@
+click
+beautifulsoup4
+lxml
+requests
+terminaltables
