@@ -1,6 +1,11 @@
 Command line Intel ARK search
 =============================
 
+.. image:: https://travis-ci.org/major/arksearch.svg?branch=master
+    :target: https://travis-ci.org/major/arksearch
+.. image:: https://codecov.io/github/major/arksearch/coverage.svg?branch=master
+    :target: https://codecov.io/github/major/arksearch?branch=master
+
 This **completely unofficial** script will perform a search of `Intel's ARK site`_ for processor information.
 
 Installation
