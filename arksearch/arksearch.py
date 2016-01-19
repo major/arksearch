@@ -54,7 +54,7 @@ def get_cpu_html(quickurl):
 
 def generate_table_data(html_output):
     """Generate an ASCII table based on the HTML provided."""
-    soup = BeautifulSoup(html_output, 'lxml')
+    soup = BeautifulSoup(html_output, 'html.parser')
 
     table_data = [
         ['Parameter', 'Value']
@@ -102,7 +102,7 @@ def search(ctx, search_term):
     counter = 0
     for cpu in ark_json:
         choice_dict[counter] = cpu['quickUrl']
-        sys.stdout.write("[{0}] {1}\n".format(counter, cpu['value']))
+        sys.stdout.write(u"[{0}] {1}\n".format(counter, cpu['value']))
         counter += 1
     choice = input("Which processor? ")
 

@@ -20,7 +20,6 @@ from setuptools import setup
 required_packages = [
     "click",
     "beautifulsoup4",
-    "lxml",
     "requests",
     "terminaltables",
 ]
