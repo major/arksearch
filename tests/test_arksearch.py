@@ -111,6 +111,27 @@ class TestArksearch(object):
         assert "Status" in result.output
         assert "Launched" in result.output
 
+    def test_search_with_single_results(self, monkeypatch):
+        mocked_json_file = ("{0}/tests/json_data/"
+                            "single_result.json".format(os.getcwd()))
+        with open(mocked_json_file, 'r') as handle:
+            mocked_json = handle.read()
+
+        def mockreturn_search_json(search_term):
+            return json.loads(mocked_json)
+
+        def mockreturn_cpu_data(search_term):
+            return self.test_table
+
+        runner = CliRunner()
+        monkeypatch.setattr(arksearch, "quick_search", mockreturn_search_json)
+        monkeypatch.setattr(arksearch, "get_cpu_html", mockreturn_cpu_data)
+        result = runner.invoke(arksearch.search, ['E3-1230L'])
+        assert "Processors found: 1" in result.output
+        assert "Processor E3-1230L v3" in result.output
+        assert "Status" in result.output
+        assert "Launched" in result.output
+
     def test_search_with_no_results(self, monkeypatch):
         def mockreturn(search_term):
             return json.loads("[]")

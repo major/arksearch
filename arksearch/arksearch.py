@@ -101,7 +101,11 @@ def search(ctx, search_term):
         choice_dict[counter] = cpu['quickUrl']
         click.echo(u"[{0}] {1}".format(counter, cpu['value']))
         counter += 1
-    choice = click.prompt(u"Which processor", prompt_suffix='? ', type=int)
+
+    if len(ark_json) > 1:
+        choice = click.prompt(u"Which processor", prompt_suffix='? ', type=int)
+    else:
+        choice = 0
 
     cpu_data = get_cpu_html(choice_dict[int(choice)])
     table_data = generate_table_data(cpu_data)
