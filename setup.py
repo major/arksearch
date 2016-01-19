@@ -26,7 +26,7 @@ required_packages = [
 
 setup(
     name='arksearch',
-    version='0.0.1',
+    version='0.0.2',
     author='Major Hayden',
     author_email='major@mhtx.net',
     description="Searches Intel's ARK site for processor information",
