@@ -3,6 +3,22 @@ Command line Intel ARK search
 
 This **completely unofficial** script will perform a search of `Intel's ARK site`_ for processor information.  Using the script is fairly straightforward:
 
+Installation
+------------
+
+From PyPi::
+
+    pip install arksearch
+
+or via git::
+
+    git clone https://github.com/major/arksearch
+    cd arksearch
+    python setup.py install
+
+Usage
+-----
+
 * Search for a processor, such as the ``E3-1230``
 * Choose the exact processor from a list
 * Read the data printed below
