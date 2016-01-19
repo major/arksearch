@@ -19,9 +19,6 @@ Searches Intel's ARK site and returns data about various processors.
 
 TOTALLY UNOFFICIAL. ;)
 """
-import sys
-
-
 from bs4 import BeautifulSoup
 
 
@@ -97,19 +94,20 @@ def search(ctx, search_term):
                    "{0}".format(search_term))
         ctx.exit(0)
 
-    click.echo("Found {0} processors...".format(len(ark_json)))
+    click.echo(u"Processors found: {0}".format(len(ark_json)))
     choice_dict = {}
     counter = 0
     for cpu in ark_json:
         choice_dict[counter] = cpu['quickUrl']
-        sys.stdout.write(u"[{0}] {1}\n".format(counter, cpu['value']))
+        click.echo(u"[{0}] {1}".format(counter, cpu['value']))
         counter += 1
-    choice = input("Which processor? ")
+    choice = click.prompt(u"Which processor", prompt_suffix='? ', type=int)
 
     cpu_data = get_cpu_html(choice_dict[int(choice)])
     table_data = generate_table_data(cpu_data)
     table = AsciiTable(table_data)
     click.echo(table.table)
+    ctx.exit(0)
 
 if __name__ == '__main__':
     search()

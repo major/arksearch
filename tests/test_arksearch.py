@@ -8,7 +8,7 @@ from arksearch import arksearch
 from click.testing import CliRunner
 
 
-from httmock import response, urlmatch, HTTMock
+from httmock import HTTMock, response, urlmatch
 
 
 class TestArksearch(object):
@@ -53,13 +53,12 @@ class TestArksearch(object):
 
         @urlmatch(netloc=r'ark.intel.com')
         def ark_mock(url, request):
-          return response(200, self.test_table.encode('utf-8'))
+            return response(200, self.test_table.encode('utf-8'))
 
         with HTTMock(ark_mock):
-          ark_baseurl = "http://ark.intel.com/"
-          quickurl = ("/products/82930/Intel-Core-i7-5960X-Processor-Extreme-"
-                      "Edition-20M-Cache-up-to-3_50-GHz")
-          result = arksearch.get_cpu_html(quickurl)
+            quickurl = ("/products/82930/Intel-Core-i7-5960X-Processor-"
+                        "Extreme-Edition-20M-Cache-up-to-3_50-GHz")
+            result = arksearch.get_cpu_html(quickurl)
         assert result == self.test_table
 
     def test_quick_search_multiple_results(self):
@@ -70,13 +69,12 @@ class TestArksearch(object):
 
         @urlmatch(netloc=r'ark.intel.com')
         def ark_mock(url, request):
-          return response(200, mocked_json.encode('utf-8'))
+            return response(200, json.loads(mocked_json))
 
         search_term = "E3-1270"
-        url = "http://ark.intel.com/search/AutoComplete?term={0}"
 
         with HTTMock(ark_mock):
-          result = arksearch.quick_search(search_term)
+            result = arksearch.quick_search(search_term)
         assert result == json.loads(mocked_json)
 
     def test_generate_table_data_normal(self):
@@ -104,14 +102,14 @@ class TestArksearch(object):
         def mockreturn_cpu_data(search_term):
             return self.test_table
 
+        runner = CliRunner()
         monkeypatch.setattr(arksearch, "quick_search", mockreturn_search_json)
         monkeypatch.setattr(arksearch, "get_cpu_html", mockreturn_cpu_data)
-        runner = CliRunner()
-        result = runner.invoke(arksearch.search, ['E3-1270'], input="1\n")
-        print(result.output)
-        assert "Found 4 processors" in result.output
+        result = runner.invoke(arksearch.search, ['E3-1270'], input="0\n")
+        assert "Processors found: 4" in result.output
         assert "Processor E3-1270 v5" in result.output
         assert "Status" in result.output
+        assert "Launched" in result.output
 
     def test_search_with_no_results(self, monkeypatch):
         def mockreturn(search_term):
