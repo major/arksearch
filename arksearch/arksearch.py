@@ -19,29 +19,37 @@ Searches Intel's ARK site and returns data about various processors.
 
 TOTALLY UNOFFICIAL. ;)
 """
-import click
-import requests
+import sys
+
+
 from bs4 import BeautifulSoup
+
+
+import click
+
+
+import requests
+
+
 from terminaltables import AsciiTable
 
 USER_AGENT = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like"
               "Gecko) Chrome/47.0.2526.111 Safari/537.36")
 
 
-def get_full_ark_url(quickUrl):
-    full_url = "http://ark.intel.com/{0}".format(quickUrl)
+def get_full_ark_url(quickurl):
+    full_url = "http://ark.intel.com{0}".format(quickurl)
     return full_url
 
 
-def get_cpu_html(quickUrl):
+def get_cpu_html(quickurl):
     """Connect to Intel's ark website and retrieve HTML."""
-    full_url = get_full_ark_url(quickUrl)
+    full_url = get_full_ark_url(quickurl)
     headers = {
         'User-Agent': USER_AGENT,
     }
-    r = requests.get(full_url)
+    r = requests.get(full_url, headers=headers)
     return r.text
-
 
 
 def generate_table_data(html_output):
@@ -73,7 +81,7 @@ def quick_search(search_term):
     headers = {
         'User-Agent': USER_AGENT,
     }
-    r = requests.get(url.format(search_term))
+    r = requests.get(url.format(search_term, headers=headers))
     return r.json()
 
 
@@ -87,17 +95,18 @@ def search(ctx, search_term):
     if len(ark_json) < 1:
         click.echo("Couldn't find any processors matching "
                    "{0}".format(search_term))
-        ctx.exit()
+        ctx.exit(0)
 
     click.echo("Found {0} processors...".format(len(ark_json)))
     choice_dict = {}
     counter = 0
     for cpu in ark_json:
         choice_dict[counter] = cpu['quickUrl']
-        print "[{0}] {1}".format(counter, cpu['value'].encode('utf-8'))
+        sys.stdout.write("[{0}] {1}\n".format(counter, cpu['value']))
         counter += 1
     choice = input("Which processor? ")
-    cpu_data = get_cpu_html(choice_dict[choice])
+
+    cpu_data = get_cpu_html(choice_dict[int(choice)])
     table_data = generate_table_data(cpu_data)
     table = AsciiTable(table_data)
     click.echo(table.table)
