@@ -20,6 +20,7 @@ Searches Intel's ARK site and returns data about various processors.
 TOTALLY UNOFFICIAL. ;)
 """
 from bs4 import BeautifulSoup
+import bs4
 
 
 import click
@@ -34,14 +35,14 @@ USER_AGENT = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like"
               "Gecko) Chrome/47.0.2526.111 Safari/537.36")
 
 
-def get_full_ark_url(quickurl):
-    full_url = "http://ark.intel.com{0}".format(quickurl)
+def get_full_ark_url(prodUrl):
+    full_url = "http://ark.intel.com{0}".format(prodUrl)
     return full_url
 
 
-def get_cpu_html(quickurl):
+def get_cpu_html(prodUrl):
     """Connect to Intel's ark website and retrieve HTML."""
-    full_url = get_full_ark_url(quickurl)
+    full_url = get_full_ark_url(prodUrl)
     headers = {
         'User-Agent': USER_AGENT,
     }
@@ -54,31 +55,33 @@ def generate_table_data(html_output):
     soup = BeautifulSoup(html_output, 'html.parser')
 
     table_data = [
-        ['Parameter', 'Value']
     ]
 
-    for table in soup.select('table.specs'):
-        rows = table.find_all("tr")
-        for row in rows[1:]:
-            cells = [cell.get_text("\n", strip=True)
-                     for cell in row.find_all('td')]
+    all_data = soup.select("#bladeInside > ul > li")
+    for i in all_data:
+        cell = ["1", "2"]
+        temp_list = []
+        for tag in i.children:
+            if type(tag) == bs4.element.Tag:
+                temp_list.append(tag)
 
-            if cells[0] == 'T\nCASE':
-                cells[0] = 'T(CASE)'
-            if "\n" in cells[0]:
-                cells[0] = cells[0][:cells[0].index("\n")]
-
-            table_data.append(cells)
-
+        cell[0] = temp_list[0].get_text().strip()
+        cell[1] = temp_list[1].get_text().strip()
+        table_data.append(cell)
     return table_data
 
 
 def quick_search(search_term):
-    url = "http://ark.intel.com/search/AutoComplete?term={0}"
+    url = "https://ark.intel.com/libs/apps/intel/arksearch/autocomplete?" + \
+        "_charset_=UTF-8" + \
+        "&locale=en_us" + \
+        "&currentPageUrl=https%3A%2F%2Fark.intel.com%2Fcontent%2Fwww%2Fus%2Fen%2Fark.html" + \
+        "&input_query={0}"
     headers = {
         'User-Agent': USER_AGENT,
     }
     r = requests.get(url.format(search_term, headers=headers))
+    print(r.text)
     return r.json()
 
 
@@ -98,8 +101,8 @@ def search(ctx, search_term):
     choice_dict = {}
     counter = 0
     for cpu in ark_json:
-        choice_dict[counter] = cpu['quickUrl']
-        click.echo(u"[{0}] {1}".format(counter, cpu['value']))
+        choice_dict[counter] = cpu['prodUrl']
+        click.echo(u"[{0}] {1}".format(counter, cpu['label']))
         counter += 1
 
     if len(ark_json) > 1:
@@ -112,6 +115,7 @@ def search(ctx, search_term):
     table = AsciiTable(table_data)
     click.echo(table.table)
     ctx.exit(0)
+
 
 if __name__ == '__main__':
     search()
