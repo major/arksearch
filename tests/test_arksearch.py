@@ -22,31 +22,31 @@ class TestArksearch(object):
                   '</tr>')
 
     test_table_tcase = (
-                  '<table class="specs infoTable"><tr class="infoSection">'
-                  '<tr id="TCase" class="tech">'
-                  '<td class="lc">'
-                  '<span class="tooltippable">T<sub>CASE</sub></span>'
-                  '</td>'
-                  '<td class="rc">66.8</td>'
-                  '</tr>')
+        '<table class="specs infoTable"><tr class="infoSection">'
+        '<tr id="TCase" class="tech">'
+        '<td class="lc">'
+        '<span class="tooltippable">T<sub>CASE</sub></span>'
+        '</td>'
+        '<td class="rc">66.8</td>'
+        '</tr>')
 
     test_table_newline = (
-                  '<table class="specs infoTable"><tr class="infoSection">'
-                  '<tr id="GraphicsModel" data-disclaim="GraphicsModel">'
-                  '<td class="lc">'
-                  '<span>Processor Graphics <small><sup>\xe2</sup></small>'
-                  '</span>'
-                  '</td>'
-                  '<td class="rc">None</td>'
-                  '</tr>')
+        '<table class="specs infoTable"><tr class="infoSection">'
+        '<tr id="GraphicsModel" data-disclaim="GraphicsModel">'
+        '<td class="lc">'
+        '<span>Processor Graphics <small><sup>\xe2</sup></small>'
+        '</span>'
+        '</td>'
+        '<td class="rc">None</td>'
+        '</tr>')
 
     def test_get_full_ark_url(self):
-        quickurl = ("/products/82930/Intel-Core-i7-5960X-Processor-Extreme-"
-                    "Edition-20M-Cache-up-to-3_50-GHz")
-        result = arksearch.get_full_ark_url(quickurl)
-        expected_url = ("http://ark.intel.com/products/82930/Intel-Core-i7-"
-                        "5960X-Processor-Extreme-Edition-20M-Cache-up-to-"
-                        "3_50-GHz")
+        prodUrl = (
+            "\/content\/www\/us\/en\/ark\/products\/82930\/intel-core-i7-5960x-processor-extreme-edition-20m-cache-up-to-3-50-ghz.html")
+        result = arksearch.get_full_ark_url(prodUrl)
+        expected_url = ("http://ark.intel.com/"
+                        "content/www/us/en/ark/products/"
+                        "82930/intel-core-i7-5960x-processor-extreme-edition-20m-cache-up-to-3-50-ghz.html")
         assert result == expected_url
 
     def test_get_cpu_html(self,):
@@ -56,9 +56,9 @@ class TestArksearch(object):
             return response(200, self.test_table.encode('utf-8'))
 
         with HTTMock(ark_mock):
-            quickurl = ("/products/82930/Intel-Core-i7-5960X-Processor-"
-                        "Extreme-Edition-20M-Cache-up-to-3_50-GHz")
-            result = arksearch.get_cpu_html(quickurl)
+            prodUrl = (
+                "\/content\/www\/us\/en\/ark\/products\/82930\/intel-core-i7-5960x-processor-extreme-edition-20m-cache-up-to-3-50-ghz.html")
+            result = arksearch.get_cpu_html(prodUrl)
         assert result == self.test_table
 
     def test_quick_search_multiple_results(self):
