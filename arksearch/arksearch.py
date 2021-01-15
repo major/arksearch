@@ -81,7 +81,6 @@ def quick_search(search_term):
         'User-Agent': USER_AGENT,
     }
     r = requests.get(url.format(search_term, headers=headers))
-    print(r.text)
     return r.json()
 
 
